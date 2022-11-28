@@ -1,0 +1,35 @@
+﻿<Window x:Class="WpfApp.View.ResultDetails"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp.View"
+        mc:Ignorable="d"
+        Title="ResultDetails" WindowStartupLocation="CenterOwner">
+    <StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+            <Label Content="Player: "/>
+            <ComboBox Name="cmbPlayer"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+            <Label Content="Game: "/>
+            <ComboBox Name="cmbGame"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+            <Label Content="Category: "/>
+            <ComboBox Name="cmbCategory"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+            <Label Content="Time: "/>
+            <TextBox Name="txtTime"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+            <Label Content="Date: "/>
+            <DatePicker Name="dtpDate"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button x:Name="btnOK" Content="OK" Margin="10" IsDefault="True" Click="btnOK_Click"/>
+            <Button x:Name="btnCancel" Content="Cancel" Margin="10" IsCancel="True"/>
+        </StackPanel>
+    </StackPanel>
+</Window>

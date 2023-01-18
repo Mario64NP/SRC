@@ -187,8 +187,7 @@ namespace WpfApp
                 Result r = new()
                 {
                     Player = _unitOfWork.Players.GetAll().Single(x => x.ID == resultDetails.Player.ID),
-                    Game = _unitOfWork.Games.GetAll().Single(x => x.ID == resultDetails.Game.ID),
-                    Category = _unitOfWork.Categories.GetAll().Single(x => x.ID == resultDetails.Category.ID),
+                    GameCategory = _unitOfWork.GameCategories.GetAll().Single(x => x.Game.ID == resultDetails.Game.ID && x.Category.ID == resultDetails.Category.ID),
                     Time = resultDetails.Time,
                     Date = resultDetails.Date
                 };
@@ -213,7 +212,9 @@ namespace WpfApp
 
             if ((bool)resultDetails.ShowDialog())
             {
-                dgResults.ItemsSource = _unitOfWork.Results.Find(x => x.Player == resultDetails.Player && x.Game == resultDetails.Game && x.Category == resultDetails.Category && x.Time == resultDetails.Time && x.Date == resultDetails.Date).ToList();
+                dgResults.ItemsSource = _unitOfWork.Results.Find(x => 
+                x.Player.Equals(resultDetails.Player) && x.GameCategory.Game.Equals(resultDetails.Game) && 
+                x.GameCategory.Category.Equals(resultDetails.Category) && x.Time == resultDetails.Time && x.Date == resultDetails.Date).ToList();
             }
         }
 
@@ -226,18 +227,21 @@ namespace WpfApp
             };
             Result selectedResult = (Result)dgResults.SelectedItem;
             resultDetails.Player = selectedResult.Player;
-            resultDetails.Game = selectedResult.Game;
-            resultDetails.Category = selectedResult.Category;
+            resultDetails.Game = selectedResult.GameCategory.Game;
+            resultDetails.Category = selectedResult.GameCategory.Category;
             resultDetails.Time = selectedResult.Time;
             resultDetails.Date = selectedResult.Date;
 
             if ((bool)resultDetails.ShowDialog())
             {
-                if (new Result() { Player = resultDetails.Player, Game = resultDetails.Game, Category = resultDetails.Category, Time = resultDetails.Time, Date = resultDetails.Date}.IsValid())
+                if (new Result() { 
+                    Player = resultDetails.Player, 
+                    GameCategory = _unitOfWork.GameCategories.GetAll().Single(gc => gc.Game.Equals(resultDetails.Game) && gc.Category.Equals(resultDetails.Category)), 
+                    Time = resultDetails.Time, 
+                    Date = resultDetails.Date}.IsValid())
                 {
                     selectedResult.Player = _unitOfWork.Players.GetAll().Single(x => x.ID == resultDetails.Player.ID);
-                    selectedResult.Game = _unitOfWork.Games.GetAll().Single(x => x.ID == resultDetails.Game.ID);
-                    selectedResult.Category = _unitOfWork.Categories.GetAll().Single(x => x.ID == resultDetails.Category.ID);
+                    selectedResult.GameCategory = _unitOfWork.GameCategories.GetAll().Single(x => x.Game.ID == resultDetails.Game.ID && x.Category.ID == resultDetails.Category.ID);
                     selectedResult.Time = resultDetails.Time;
                     selectedResult.Date = resultDetails.Date;
                     _unitOfWork.Complete();

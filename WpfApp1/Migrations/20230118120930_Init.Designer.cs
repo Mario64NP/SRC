@@ -12,7 +12,7 @@ using WpfApp.Controller;
 namespace WpfApp.Migrations
 {
     [DbContext(typeof(SRCContext))]
-    [Migration("20221106012220_Init")]
+    [Migration("20230118120930_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,7 +24,7 @@ namespace WpfApp.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("WpfApp1.Domain.Category", b =>
+            modelBuilder.Entity("WpfApp.Domain.Category", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -45,7 +45,7 @@ namespace WpfApp.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("WpfApp1.Domain.Game", b =>
+            modelBuilder.Entity("WpfApp.Domain.Game", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -74,7 +74,7 @@ namespace WpfApp.Migrations
                     b.ToTable("Games");
                 });
 
-            modelBuilder.Entity("WpfApp1.Domain.GameCategory", b =>
+            modelBuilder.Entity("WpfApp.Domain.GameCategory", b =>
                 {
                     b.Property<int>("GameID")
                         .HasColumnType("int");
@@ -89,7 +89,7 @@ namespace WpfApp.Migrations
                     b.ToTable("GameCategories");
                 });
 
-            modelBuilder.Entity("WpfApp1.Domain.Platform", b =>
+            modelBuilder.Entity("WpfApp.Domain.Platform", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -106,7 +106,7 @@ namespace WpfApp.Migrations
                     b.ToTable("Platforms");
                 });
 
-            modelBuilder.Entity("WpfApp1.Domain.Player", b =>
+            modelBuilder.Entity("WpfApp.Domain.Player", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -126,35 +126,36 @@ namespace WpfApp.Migrations
                     b.ToTable("Players");
                 });
 
-            modelBuilder.Entity("WpfApp1.Domain.Result", b =>
+            modelBuilder.Entity("WpfApp.Domain.Result", b =>
                 {
                     b.Property<int>("PlayerID")
                         .HasColumnType("int");
 
-                    b.Property<int>("GameID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CategoryID")
+                    b.Property<int>("GameCategoryID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("GameCategoryCategoryID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GameCategoryGameID")
+                        .HasColumnType("int");
+
                     b.Property<int>("Time")
                         .HasColumnType("int");
 
-                    b.HasKey("PlayerID", "GameID", "CategoryID");
+                    b.HasKey("PlayerID", "GameCategoryID");
 
-                    b.HasIndex("CategoryID");
-
-                    b.HasIndex("GameID");
+                    b.HasIndex("GameCategoryGameID", "GameCategoryCategoryID");
 
                     b.ToTable("Results");
                 });
 
-            modelBuilder.Entity("WpfApp1.Domain.Game", b =>
+            modelBuilder.Entity("WpfApp.Domain.Game", b =>
                 {
-                    b.HasOne("WpfApp1.Domain.Platform", "Platform")
+                    b.HasOne("WpfApp.Domain.Platform", "Platform")
                         .WithMany()
                         .HasForeignKey("PlatformID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -163,15 +164,15 @@ namespace WpfApp.Migrations
                     b.Navigation("Platform");
                 });
 
-            modelBuilder.Entity("WpfApp1.Domain.GameCategory", b =>
+            modelBuilder.Entity("WpfApp.Domain.GameCategory", b =>
                 {
-                    b.HasOne("WpfApp1.Domain.Category", "Category")
+                    b.HasOne("WpfApp.Domain.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WpfApp1.Domain.Game", "Game")
+                    b.HasOne("WpfApp.Domain.Game", "Game")
                         .WithMany()
                         .HasForeignKey("GameID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -182,29 +183,21 @@ namespace WpfApp.Migrations
                     b.Navigation("Game");
                 });
 
-            modelBuilder.Entity("WpfApp1.Domain.Result", b =>
+            modelBuilder.Entity("WpfApp.Domain.Result", b =>
                 {
-                    b.HasOne("WpfApp1.Domain.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WpfApp1.Domain.Game", "Game")
-                        .WithMany()
-                        .HasForeignKey("GameID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WpfApp1.Domain.Player", "Player")
+                    b.HasOne("WpfApp.Domain.Player", "Player")
                         .WithMany()
                         .HasForeignKey("PlayerID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Category");
+                    b.HasOne("WpfApp.Domain.GameCategory", "GameCategory")
+                        .WithMany()
+                        .HasForeignKey("GameCategoryGameID", "GameCategoryCategoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Game");
+                    b.Navigation("GameCategory");
 
                     b.Navigation("Player");
                 });

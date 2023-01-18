@@ -101,25 +101,20 @@ namespace WpfApp.Migrations
                 columns: table => new
                 {
                     PlayerID = table.Column<int>(type: "int", nullable: false),
-                    GameID = table.Column<int>(type: "int", nullable: false),
-                    CategoryID = table.Column<int>(type: "int", nullable: false),
+                    GameCategoryID = table.Column<int>(type: "int", nullable: false),
+                    GameCategoryGameID = table.Column<int>(type: "int", nullable: false),
+                    GameCategoryCategoryID = table.Column<int>(type: "int", nullable: false),
                     Time = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Results", x => new { x.PlayerID, x.GameID, x.CategoryID });
+                    table.PrimaryKey("PK_Results", x => new { x.PlayerID, x.GameCategoryID });
                     table.ForeignKey(
-                        name: "FK_Results_Categories_CategoryID",
-                        column: x => x.CategoryID,
-                        principalTable: "Categories",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Results_Games_GameID",
-                        column: x => x.GameID,
-                        principalTable: "Games",
-                        principalColumn: "ID",
+                        name: "FK_Results_GameCategories_GameCategoryGameID_GameCategoryCategoryID",
+                        columns: x => new { x.GameCategoryGameID, x.GameCategoryCategoryID },
+                        principalTable: "GameCategories",
+                        principalColumns: new[] { "GameID", "CategoryID" },
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Results_Players_PlayerID",
@@ -140,32 +135,27 @@ namespace WpfApp.Migrations
                 column: "PlatformID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Results_CategoryID",
+                name: "IX_Results_GameCategoryGameID_GameCategoryCategoryID",
                 table: "Results",
-                column: "CategoryID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Results_GameID",
-                table: "Results",
-                column: "GameID");
+                columns: new[] { "GameCategoryGameID", "GameCategoryCategoryID" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Results");
+
+            migrationBuilder.DropTable(
                 name: "GameCategories");
 
             migrationBuilder.DropTable(
-                name: "Results");
+                name: "Players");
 
             migrationBuilder.DropTable(
                 name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Games");
-
-            migrationBuilder.DropTable(
-                name: "Players");
 
             migrationBuilder.DropTable(
                 name: "Platforms");

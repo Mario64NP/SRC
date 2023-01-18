@@ -9,5 +9,13 @@
         {
             return Name;
         }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj == null || obj is not Platform p)
+                return false;
+            else
+                return p.ID == ID;
+        }
     }
 }

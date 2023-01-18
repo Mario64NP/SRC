@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using WpfApp.Controller;
+using WpfApp.DataAccessLayer.Implementations;
+using WpfApp.DataAccessLayer.Interfaces;
 using WpfApp.Domain;
 using WpfApp.View;
 
@@ -9,104 +10,140 @@ namespace WpfApp
 {
     public partial class MainWindow : Window
     {
-        private SRCContext _context = new SRCContext();
+        private IUnitOfWork _unitOfWork;
         public MainWindow()
         {
             InitializeComponent();
 
-            _context.Players.Load();
-            _context.Platforms.Load();
-            _context.Games.Load();
-            _context.Categories.Load();
-            _context.GameCategories.Load();
-            _context.Results.Load();
-            dgPlayers.ItemsSource = _context.Players.Local.ToObservableCollection();
-            dgGames.ItemsSource = _context.Games.Local.ToObservableCollection();
-            dgResults.ItemsSource = _context.Results.Local.ToObservableCollection();
+            _unitOfWork = new UnitOfWork(new SRCContext());
+
+            dgPlayers.ItemsSource = _unitOfWork.Players.GetAll();
+            dgGames.ItemsSource   = _unitOfWork.Games.GetAll();
+            dgResults.ItemsSource = _unitOfWork.Results.GetAll();
         }
 
         private void btnAddPlayer_Click(object sender, RoutedEventArgs e)
         {
-            PlayerDetails playerDetails = new PlayerDetails();
-            playerDetails.Title = "Add new player";
+            PlayerDetails playerDetails = new()
+            {
+                Title = "Add new player",
+                Owner = this
+            };
 
             if ((bool)playerDetails.ShowDialog())
             {
-                _context.Add(new Player()
+                Player p = new()
                 {
                     Nick = playerDetails.Nick,
                     Age = playerDetails.Age,
-                });
-                _context.SaveChanges();
+                };
+
+                if (p.IsValid())
+                {
+                    _unitOfWork.Players.Add(p);
+                    _unitOfWork.Complete();
+                }
+                else
+                    MessageBox.Show("The details you've entered aren't valid.", "Invalid details", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void btnSearchPlayers_Click(object sender, RoutedEventArgs e)
         {
-            PlayerDetails playerDetails = new PlayerDetails();
-            playerDetails.Title = "Search players";
+            PlayerDetails playerDetails = new()
+            {
+                Title = "Search players",
+                Owner = this
+            };
 
             if ((bool)playerDetails.ShowDialog())
             {
-                dgPlayers.ItemsSource = _context.Players.Where(x => x.Nick == playerDetails.Nick && x.Age == playerDetails.Age).ToList();
+                dgPlayers.ItemsSource = _unitOfWork.Players.Find(x => x.Nick == playerDetails.Nick && x.Age == playerDetails.Age).ToList();
             }
         }
 
         private void btnEditPlayer_Click(object sender, RoutedEventArgs e)
         {
-            PlayerDetails playerDetails = new PlayerDetails();
-            playerDetails.Title = "Edit a player";
+            PlayerDetails playerDetails = new()
+            {
+                Title = "Edit a player",
+                Owner = this
+            };
             Player selectedPlayer = (Player)dgPlayers.SelectedItem;
             playerDetails.Nick = selectedPlayer.Nick;
             playerDetails.Age = selectedPlayer.Age;
 
             if ((bool)playerDetails.ShowDialog())
             {
-                selectedPlayer.Nick = playerDetails.Nick;
-                selectedPlayer.Age = playerDetails.Age;
-                _context.SaveChanges();
+                if (new Player() { Nick = playerDetails.Nick, Age = playerDetails.Age}.IsValid())
+                {
+                    selectedPlayer.Nick = playerDetails.Nick;
+                    selectedPlayer.Age = playerDetails.Age;
+                    _unitOfWork.Complete();
+                }
+                else
+                    MessageBox.Show("The details you've entered aren't valid.", "Invalid details", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void btnDeletePlayer_Click(object sender, RoutedEventArgs e)
         {
-            _context.Remove((Player)dgPlayers.SelectedItem);
-            _context.SaveChanges();
+            if (dgPlayers.SelectedItem != null)
+            {
+                _unitOfWork.Players.Remove((Player)dgPlayers.SelectedItem);
+                _unitOfWork.Complete();
+            }
         }
 
         private void btnAddGame_Click(object sender, RoutedEventArgs e)
         {
-            GameDetails gameDetails = new GameDetails();
-            gameDetails.Title = "Add new game";
+            GameDetails gameDetails = new()
+            {
+                Title = "Add new game",
+                Owner = this
+            };
 
             if ((bool)gameDetails.ShowDialog())
             {
-                _context.Add(new Game()
+                Game g = new()
                 {
                     Name = gameDetails.Name,
                     Developer = gameDetails.Developer,
                     ReleaseYear = gameDetails.ReleaseYear,
-                    Platform = _context.Platforms.Single(x => x.ID == gameDetails.Platform.ID)
-                });
-                _context.SaveChanges();
+                    Platform = _unitOfWork.Platforms.GetAll().Single(x => x.ID == gameDetails.Platform.ID)
+                };
+
+                if (g.IsValid())
+                {
+                    _unitOfWork.Games.Add(g);
+                    _unitOfWork.Complete();
+                }
+                else
+                    MessageBox.Show("The details you've entered aren't valid.", "Invalid details", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void btnSearchGames_Click(object sender, RoutedEventArgs e)
         {
-            GameDetails gameDetails = new GameDetails();
-            gameDetails.Title = "Search games";
+            GameDetails gameDetails = new()
+            {
+                Title = "Search games",
+                Owner = this
+            };
 
             if ((bool)gameDetails.ShowDialog())
             {
-                dgGames.ItemsSource = _context.Games.Where(x => x.Name == gameDetails.Name && x.Developer == gameDetails.Developer && x.ReleaseYear == gameDetails.ReleaseYear && x.Platform == gameDetails.Platform).ToList();
+                dgGames.ItemsSource = _unitOfWork.Games.Find(x => x.Name == gameDetails.Name && x.Developer == gameDetails.Developer && x.ReleaseYear == gameDetails.ReleaseYear && x.Platform == gameDetails.Platform).ToList();
             }
         }
 
         private void btnEditGame_Click(object sender, RoutedEventArgs e)
         {
-            GameDetails gameDetails = new GameDetails();
-            gameDetails.Title = "Edit a player";
+            GameDetails gameDetails = new()
+            {
+                Title = "Edit a player",
+                Owner = this
+            };
             Game selectedGame = (Game)dgGames.SelectedItem;
             gameDetails.Name = selectedGame.Name;
             gameDetails.Developer = selectedGame.Developer;
@@ -115,54 +152,78 @@ namespace WpfApp
 
             if ((bool)gameDetails.ShowDialog())
             {
-                selectedGame.Name = gameDetails.Name;
-                selectedGame.Developer = gameDetails.Developer;
-                selectedGame.ReleaseYear = gameDetails.ReleaseYear;
-                selectedGame.Platform = _context.Platforms.Single(x => x.ID == gameDetails.Platform.ID);
-                _context.SaveChanges();
+                if (new Game() { Name = gameDetails.Name, Developer = gameDetails.Developer, ReleaseYear = gameDetails.ReleaseYear, Platform = gameDetails.Platform}.IsValid())
+                {
+                    selectedGame.Name = gameDetails.Name;
+                    selectedGame.Developer = gameDetails.Developer;
+                    selectedGame.ReleaseYear = gameDetails.ReleaseYear;
+                    selectedGame.Platform = _unitOfWork.Platforms.GetAll().Single(x => x.ID == gameDetails.Platform.ID);
+                    _unitOfWork.Complete();
+                }
+                else
+                    MessageBox.Show("The details you've entered aren't valid.", "Invalid details", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void btnDeleteGame_Click(object sender, RoutedEventArgs e)
         {
-            _context.Remove((Game)dgGames.SelectedItem);
-            _context.SaveChanges();
+            if (dgGames.SelectedItem != null)
+            {
+                _unitOfWork.Games.Remove((Game)dgGames.SelectedItem);
+                _unitOfWork.Complete();
+            }
         }
 
         private void btnAddResult_Click(object sender, RoutedEventArgs e)
         {
-            ResultDetails resultDetails = new ResultDetails();
-            resultDetails.Title = "Add new result";
+            ResultDetails resultDetails = new()
+            {
+                Title = "Add new result",
+                Owner = this
+            };
 
             if ((bool)resultDetails.ShowDialog())
             {
-                _context.Add(new Result()
+                Result r = new()
                 {
-                    Player = _context.Players.Single(x => x.ID == resultDetails.Player.ID), //resultDetails.Player,
-                    Game = _context.Games.Single(x => x.ID == resultDetails.Game.ID), //resultDetails.Game,
-                    Category = _context.Categories.Single(x => x.ID == resultDetails.Category.ID), //resultDetails.Category,
+                    Player = _unitOfWork.Players.GetAll().Single(x => x.ID == resultDetails.Player.ID),
+                    Game = _unitOfWork.Games.GetAll().Single(x => x.ID == resultDetails.Game.ID),
+                    Category = _unitOfWork.Categories.GetAll().Single(x => x.ID == resultDetails.Category.ID),
                     Time = resultDetails.Time,
                     Date = resultDetails.Date
-                });
-                _context.SaveChanges();
+                };
+
+                if (r.IsValid())
+                {
+                    _unitOfWork.Results.Add(r);
+                    _unitOfWork.Complete();
+                }
+                else
+                    MessageBox.Show("The details you've entered aren't valid.", "Invalid details", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void btnSearchResults_Click(object sender, RoutedEventArgs e)
         {
-            ResultDetails resultDetails = new ResultDetails();
-            resultDetails.Title = "Search results";
+            ResultDetails resultDetails = new()
+            {
+                Title = "Search results",
+                Owner = this
+            };
 
             if ((bool)resultDetails.ShowDialog())
             {
-                dgResults.ItemsSource = _context.Results.Where(x => x.Player == resultDetails.Player && x.Game == resultDetails.Game && x.Category == resultDetails.Category && x.Time == resultDetails.Time && x.Date == resultDetails.Date).ToList();
+                dgResults.ItemsSource = _unitOfWork.Results.Find(x => x.Player == resultDetails.Player && x.Game == resultDetails.Game && x.Category == resultDetails.Category && x.Time == resultDetails.Time && x.Date == resultDetails.Date).ToList();
             }
         }
 
         private void btnEditResult_Click(object sender, RoutedEventArgs e)
         {
-            ResultDetails resultDetails = new ResultDetails();
-            resultDetails.Title = "Edit a player";
+            ResultDetails resultDetails = new()
+            {
+                Title = "Edit a player",
+                Owner = this
+            };
             Result selectedResult = (Result)dgResults.SelectedItem;
             resultDetails.Player = selectedResult.Player;
             resultDetails.Game = selectedResult.Game;
@@ -172,19 +233,27 @@ namespace WpfApp
 
             if ((bool)resultDetails.ShowDialog())
             {
-                selectedResult.Player = _context.Players.Single(x => x.ID == resultDetails.Player.ID);
-                selectedResult.Game = _context.Games.Single(x => x.ID == resultDetails.Game.ID);
-                selectedResult.Category = _context.Categories.Single(x => x.ID == resultDetails.Category.ID);
-                selectedResult.Time = resultDetails.Time;
-                selectedResult.Date = resultDetails.Date;
-                _context.SaveChanges();
+                if (new Result() { Player = resultDetails.Player, Game = resultDetails.Game, Category = resultDetails.Category, Time = resultDetails.Time, Date = resultDetails.Date}.IsValid())
+                {
+                    selectedResult.Player = _unitOfWork.Players.GetAll().Single(x => x.ID == resultDetails.Player.ID);
+                    selectedResult.Game = _unitOfWork.Games.GetAll().Single(x => x.ID == resultDetails.Game.ID);
+                    selectedResult.Category = _unitOfWork.Categories.GetAll().Single(x => x.ID == resultDetails.Category.ID);
+                    selectedResult.Time = resultDetails.Time;
+                    selectedResult.Date = resultDetails.Date;
+                    _unitOfWork.Complete();
+                }
+                else
+                    MessageBox.Show("The details you've entered aren't valid.", "Invalid details", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void btnDeleteResult_Click(object sender, RoutedEventArgs e)
         {
-            _context.Remove((Result)dgResults.SelectedItem);
-            _context.SaveChanges();
+            if (dgResults.SelectedItem != null)
+            {
+                _unitOfWork.Results.Remove((Result)dgResults.SelectedItem);
+                _unitOfWork.Complete();
+            }
         }
 
         private void dgResults_AutoGeneratedColumns(object sender, System.EventArgs e)

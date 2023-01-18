@@ -11,5 +11,12 @@
             return Name;
         }
 
+        public override bool Equals(object? obj)
+        {
+            if (obj == null || obj is not Category c)
+                return false;
+            else
+                return c.ID == ID;
+        }
     }
 }

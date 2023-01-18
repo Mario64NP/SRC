@@ -7,8 +7,7 @@ namespace WpfApp
     {
         public string Nick { get { return txtNick.Text; } set { txtNick.Text = value; } }
         public int Age { get { return int.Parse(txtAge.Text) ; } set { txtAge.Text = value.ToString(); } }
-        //public CheckBox ChbNick { get { return chbNadimak; } }
-        //public CheckBox ChbAge { get { return chbStarost; } }
+
         public PlayerDetails()
         {
             InitializeComponent();

@@ -11,5 +11,17 @@
             return Nick;
         }
 
+        public override bool Equals(object? obj)
+        {
+            if (obj == null || obj is not Player p)
+                return false;
+            else
+                return p.ID == ID;
+        }
+
+        public bool IsValid()
+        {
+            return !string.IsNullOrEmpty(Nick) && Age > 13;
+        }
     }
 }

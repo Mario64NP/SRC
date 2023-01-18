@@ -12,5 +12,10 @@ namespace WpfApp.Domain
         public Category Category { get; set; }
         public int Time { get; set; }
         public DateTime Date { get; set; }
+
+        public bool IsValid()
+        {
+            return Player != null && Game != null && Category != null && Time > 0 && Date < DateTime.Now;
+        }
     }
 }

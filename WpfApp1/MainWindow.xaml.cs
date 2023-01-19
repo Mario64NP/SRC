@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using WpfApp.Controller;
 using WpfApp.DataAccessLayer.Implementations;
 using WpfApp.DataAccessLayer.Interfaces;
@@ -227,8 +228,8 @@ namespace WpfApp
             };
             Result selectedResult = (Result)dgResults.SelectedItem;
             resultDetails.Player = selectedResult.Player;
-            resultDetails.Game = selectedResult.GameCategory.Game;
-            resultDetails.Category = selectedResult.GameCategory.Category;
+            resultDetails.Game = selectedResult.Game;
+            resultDetails.Category = selectedResult.Category;
             resultDetails.Time = selectedResult.Time;
             resultDetails.Date = selectedResult.Date;
 
@@ -240,8 +241,6 @@ namespace WpfApp
                     Time = resultDetails.Time, 
                     Date = resultDetails.Date}.IsValid())
                 {
-                    selectedResult.Player = _unitOfWork.Players.GetAll().Single(x => x.ID == resultDetails.Player.ID);
-                    selectedResult.GameCategory = _unitOfWork.GameCategories.GetAll().Single(x => x.Game.ID == resultDetails.Game.ID && x.Category.ID == resultDetails.Category.ID);
                     selectedResult.Time = resultDetails.Time;
                     selectedResult.Date = resultDetails.Date;
                     _unitOfWork.Complete();
@@ -264,7 +263,8 @@ namespace WpfApp
         {
             dgResults.Columns[0].Visibility = Visibility.Collapsed;
             dgResults.Columns[2].Visibility = Visibility.Collapsed;
-            dgResults.Columns[4].Visibility = Visibility.Collapsed;
+            dgResults.Columns[3].Visibility = Visibility.Collapsed;
+            dgResults.Columns[5].Visibility = Visibility.Collapsed;
         }
     }
 }

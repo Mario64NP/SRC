@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Windows;
+﻿using System.Windows;
 using WpfApp.Controller;
 using WpfApp.DataAccessLayer.Implementations;
 using WpfApp.DataAccessLayer.Interfaces;
@@ -12,7 +11,13 @@ namespace WpfApp.View
         private readonly IUnitOfWork _unitOfWork;
         public new string Name { get { return txtName.Text; } set { txtName.Text = value; } }
         public string Developer { get { return txtDeveloper.Text; } set { txtDeveloper.Text = value; } }
-        public int ReleaseYear { get { return int.Parse(txtReleaseYear.Text); } set { txtReleaseYear.Text = value.ToString(); } }
+        public int ReleaseYear { 
+            get 
+            {
+                _ = int.TryParse(txtReleaseYear.Text, out int year);
+                return year;
+            } 
+            set { txtReleaseYear.Text = value.ToString(); } }
         public Platform Platform { get { return (Platform)cmbPlatform.SelectedItem; } set { cmbPlatform.SelectedItem = value; } }
         public GameDetails()
         {

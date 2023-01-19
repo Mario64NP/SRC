@@ -1,6 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
+using System.Windows.Documents;
 using WpfApp.Controller;
 using WpfApp.DataAccessLayer.Implementations;
 using WpfApp.DataAccessLayer.Interfaces;
@@ -32,6 +35,17 @@ namespace WpfApp.View
         private void btnOK_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
+        }
+
+        private void cmbGame_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            List<Category> list = new();
+
+            foreach (var item in _unitOfWork.GameCategories.Find(gc => gc.Game.Equals((Game)cmbGame.SelectedItem)).ToList())
+                list.Add(_unitOfWork.Categories.GetById(item.Category.ID));
+
+            cmbCategory.ItemsSource = list;
+            cmbCategory.SelectedIndex = 0;
         }
     }
 }

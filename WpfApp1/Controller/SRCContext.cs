@@ -20,7 +20,7 @@ namespace WpfApp.Controller
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<GameCategory>().HasKey(gc => new { gc.GameID, gc.CategoryID });
-            modelBuilder.Entity<Result>().HasKey(r => new { r.PlayerID, r.GameCategoryID });
+            modelBuilder.Entity<Result>().HasKey(r => new { r.PlayerID, r.GameID, r.CategoryID });
             modelBuilder.Entity<Result>().HasOne(r => r.GameCategory).WithMany();
         }
     }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WpfApp.Controller;
 
@@ -11,9 +12,10 @@ using WpfApp.Controller;
 namespace WpfApp.Migrations
 {
     [DbContext(typeof(SRCContext))]
-    partial class SRCContextModelSnapshot : ModelSnapshot
+    [Migration("20230118154522_Test")]
+    partial class Test
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -137,6 +139,9 @@ namespace WpfApp.Migrations
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("GameCategoryID")
+                        .HasColumnType("int");
 
                     b.Property<int>("Time")
                         .HasColumnType("int");

@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using WpfApp.Controller;
 using WpfApp.DataAccessLayer.Implementations;
 using WpfApp.DataAccessLayer.Interfaces;
@@ -11,7 +10,7 @@ namespace WpfApp
 {
     public partial class MainWindow : Window
     {
-        private IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
         public MainWindow()
         {
             InitializeComponent();
@@ -27,7 +26,7 @@ namespace WpfApp
         {
             PlayerDetails playerDetails = new()
             {
-                Title = "Add new player",
+                Title = "Add a new player",
                 Owner = this
             };
 
@@ -36,7 +35,7 @@ namespace WpfApp
                 Player p = new()
                 {
                     Nick = playerDetails.Nick,
-                    Age = playerDetails.Age,
+                    Age  = playerDetails.Age,
                 };
 
                 if (p.IsValid())
@@ -65,22 +64,30 @@ namespace WpfApp
 
         private void btnEditPlayer_Click(object sender, RoutedEventArgs e)
         {
+            if (dgPlayers.SelectedItem == null)
+                return;
+
+            Player selectedPlayer = (Player)dgPlayers.SelectedItem;
             PlayerDetails playerDetails = new()
             {
                 Title = "Edit a player",
-                Owner = this
+                Owner = this,
+                Nick  = selectedPlayer.Nick,
+                Age   = selectedPlayer.Age
             };
-            Player selectedPlayer = (Player)dgPlayers.SelectedItem;
-            playerDetails.Nick = selectedPlayer.Nick;
-            playerDetails.Age = selectedPlayer.Age;
 
             if ((bool)playerDetails.ShowDialog())
             {
                 if (new Player() { Nick = playerDetails.Nick, Age = playerDetails.Age}.IsValid())
                 {
                     selectedPlayer.Nick = playerDetails.Nick;
-                    selectedPlayer.Age = playerDetails.Age;
+                    selectedPlayer.Age  = playerDetails.Age;
                     _unitOfWork.Complete();
+
+                    dgPlayers.ItemsSource = null;
+                    dgPlayers.ItemsSource = _unitOfWork.Players.GetAll();
+                    dgResults.ItemsSource = null;
+                    dgResults.ItemsSource = _unitOfWork.Results.GetAll();
                 }
                 else
                     MessageBox.Show("The details you've entered aren't valid.", "Invalid details", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -100,7 +107,7 @@ namespace WpfApp
         {
             GameDetails gameDetails = new()
             {
-                Title = "Add new game",
+                Title = "Add a new game",
                 Owner = this
             };
 
@@ -108,10 +115,10 @@ namespace WpfApp
             {
                 Game g = new()
                 {
-                    Name = gameDetails.Name,
-                    Developer = gameDetails.Developer,
+                    Name        = gameDetails.Name,
+                    Developer   = gameDetails.Developer,
                     ReleaseYear = gameDetails.ReleaseYear,
-                    Platform = _unitOfWork.Platforms.GetAll().Single(x => x.ID == gameDetails.Platform.ID)
+                    Platform    = _unitOfWork.Platforms.GetAll().Single(x => x.Equals(gameDetails.Platform))
                 };
 
                 if (g.IsValid())
@@ -134,32 +141,40 @@ namespace WpfApp
 
             if ((bool)gameDetails.ShowDialog())
             {
-                dgGames.ItemsSource = _unitOfWork.Games.Find(x => x.Name == gameDetails.Name && x.Developer == gameDetails.Developer && x.ReleaseYear == gameDetails.ReleaseYear && x.Platform == gameDetails.Platform).ToList();
+                dgGames.ItemsSource = _unitOfWork.Games.Find(x => x.Name == gameDetails.Name && x.Developer == gameDetails.Developer && x.ReleaseYear == gameDetails.ReleaseYear && x.Platform.Equals(gameDetails.Platform)).ToList();
             }
         }
 
         private void btnEditGame_Click(object sender, RoutedEventArgs e)
         {
+            if (dgGames.SelectedItem == null)
+                return;
+
+            Game selectedGame = (Game)dgGames.SelectedItem;
             GameDetails gameDetails = new()
             {
-                Title = "Edit a player",
-                Owner = this
+                Title       = "Edit a game",
+                Owner       = this,
+                Name        = selectedGame.Name,
+                Developer   = selectedGame.Developer,
+                ReleaseYear = selectedGame.ReleaseYear,
+                Platform    = selectedGame.Platform
             };
-            Game selectedGame = (Game)dgGames.SelectedItem;
-            gameDetails.Name = selectedGame.Name;
-            gameDetails.Developer = selectedGame.Developer;
-            gameDetails.ReleaseYear = selectedGame.ReleaseYear;
-            gameDetails.Platform = selectedGame.Platform;
 
             if ((bool)gameDetails.ShowDialog())
             {
                 if (new Game() { Name = gameDetails.Name, Developer = gameDetails.Developer, ReleaseYear = gameDetails.ReleaseYear, Platform = gameDetails.Platform}.IsValid())
                 {
-                    selectedGame.Name = gameDetails.Name;
-                    selectedGame.Developer = gameDetails.Developer;
+                    selectedGame.Name        = gameDetails.Name;
+                    selectedGame.Developer   = gameDetails.Developer;
                     selectedGame.ReleaseYear = gameDetails.ReleaseYear;
-                    selectedGame.Platform = _unitOfWork.Platforms.GetAll().Single(x => x.ID == gameDetails.Platform.ID);
+                    selectedGame.Platform    = _unitOfWork.Platforms.GetAll().Single(x => x.Equals(gameDetails.Platform));
                     _unitOfWork.Complete();
+
+                    dgGames.ItemsSource = null;
+                    dgGames.ItemsSource = _unitOfWork.Games.GetAll();
+                    dgResults.ItemsSource = null;
+                    dgResults.ItemsSource = _unitOfWork.Results.GetAll();
                 }
                 else
                     MessageBox.Show("The details you've entered aren't valid.", "Invalid details", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -179,7 +194,7 @@ namespace WpfApp
         {
             ResultDetails resultDetails = new()
             {
-                Title = "Add new result",
+                Title = "Add a new result",
                 Owner = this
             };
 
@@ -187,10 +202,10 @@ namespace WpfApp
             {
                 Result r = new()
                 {
-                    Player = _unitOfWork.Players.GetAll().Single(x => x.ID == resultDetails.Player.ID),
-                    GameCategory = _unitOfWork.GameCategories.GetAll().Single(x => x.Game.ID == resultDetails.Game.ID && x.Category.ID == resultDetails.Category.ID),
-                    Time = resultDetails.Time,
-                    Date = resultDetails.Date
+                    Player       = _unitOfWork.Players.GetAll().Single(x => x.Equals(resultDetails.Player)),
+                    GameCategory = _unitOfWork.GameCategories.GetAll().Single(x => x.Game.Equals(resultDetails.Game) && x.Category.Equals(resultDetails.Category)),
+                    Time         = resultDetails.Time,
+                    Date         = resultDetails.Date
                 };
 
                 if (r.IsValid())
@@ -221,29 +236,36 @@ namespace WpfApp
 
         private void btnEditResult_Click(object sender, RoutedEventArgs e)
         {
+            if (dgResults.SelectedItem == null)
+                return;
+
+            Result selectedResult = (Result)dgResults.SelectedItem;
             ResultDetails resultDetails = new()
             {
-                Title = "Edit a player",
-                Owner = this
+                Title    = "Edit a result",
+                Owner    = this,
+                Player   = selectedResult.Player,
+                Game     = selectedResult.Game,
+                Category = selectedResult.Category,
+                Time     = selectedResult.Time,
+                Date     = selectedResult.Date
             };
-            Result selectedResult = (Result)dgResults.SelectedItem;
-            resultDetails.Player = selectedResult.Player;
-            resultDetails.Game = selectedResult.Game;
-            resultDetails.Category = selectedResult.Category;
-            resultDetails.Time = selectedResult.Time;
-            resultDetails.Date = selectedResult.Date;
+            resultDetails.DisableEditingKeyFields();
 
             if ((bool)resultDetails.ShowDialog())
             {
                 if (new Result() { 
-                    Player = resultDetails.Player, 
+                    Player       = resultDetails.Player, 
                     GameCategory = _unitOfWork.GameCategories.GetAll().Single(gc => gc.Game.Equals(resultDetails.Game) && gc.Category.Equals(resultDetails.Category)), 
-                    Time = resultDetails.Time, 
-                    Date = resultDetails.Date}.IsValid())
+                    Time         = resultDetails.Time, 
+                    Date         = resultDetails.Date}.IsValid())
                 {
                     selectedResult.Time = resultDetails.Time;
                     selectedResult.Date = resultDetails.Date;
                     _unitOfWork.Complete();
+
+                    dgResults.ItemsSource = null;
+                    dgResults.ItemsSource = _unitOfWork.Results.GetAll();
                 }
                 else
                     MessageBox.Show("The details you've entered aren't valid.", "Invalid details", MessageBoxButton.OK, MessageBoxImage.Error);

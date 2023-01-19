@@ -1,9 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using System.Windows.Documents;
 using WpfApp.Controller;
 using WpfApp.DataAccessLayer.Implementations;
 using WpfApp.DataAccessLayer.Interfaces;
@@ -17,11 +15,24 @@ namespace WpfApp.View
         public Player Player { get { return (Player)cmbPlayer.SelectedItem; } set { cmbPlayer.SelectedItem = value; } }
         public Game Game { get { return (Game)cmbGame.SelectedItem; } set { cmbGame.SelectedItem = value; } }
         public Category Category { get { return (Category)cmbCategory.SelectedItem; } set { cmbCategory.SelectedItem = value; } }
-        public int Time { get { return int.Parse(txtTime.Text); } set { txtTime.Text = value.ToString(); } }
-        public DateTime Date { get { return DateTime.Parse(dtpDate.Text); } set { dtpDate.Text = value.ToString(); } }
+        public int Time { 
+            get 
+            {
+                _ = int.TryParse(txtTime.Text, out int t);
+                return t;
+            } 
+            set { txtTime.Text = value.ToString(); } }
+        public DateTime Date { 
+            get 
+            {
+                _ = DateTime.TryParse(dtpDate.Text, out DateTime dt);
+                return dt;
+            } 
+            set { dtpDate.Text = value.ToString(); } }
         public ResultDetails()
         {
             InitializeComponent();
+            dtpDate.Text = DateTime.Now.ToString();
 
             _unitOfWork = new UnitOfWork(new SRCContext());
             cmbPlayer.ItemsSource     = _unitOfWork.Players.GetAll();
@@ -46,6 +57,13 @@ namespace WpfApp.View
 
             cmbCategory.ItemsSource = list;
             cmbCategory.SelectedIndex = 0;
+        }
+
+        public void DisableEditingKeyFields()
+        {
+            cmbPlayer.IsEnabled   = false;
+            cmbGame.IsEnabled     = false;
+            cmbCategory.IsEnabled = false;
         }
     }
 }

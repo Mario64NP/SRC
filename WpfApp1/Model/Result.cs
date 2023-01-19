@@ -16,7 +16,7 @@ namespace WpfApp.Domain
 
         public bool IsValid()
         {
-            return Player != null && GameCategory != null && Time > 0 && Date < DateTime.Now;
+            return Player != null && GameCategory != null && Time > 0 && Date > DateTime.Parse("1.1.1958.") && Date < DateTime.Now;
         }
     }
 }

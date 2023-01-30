@@ -50,16 +50,8 @@ namespace WpfApp
 
         private void btnSearchPlayers_Click(object sender, RoutedEventArgs e)
         {
-            PlayerDetails playerDetails = new()
-            {
-                Title = "Search players",
-                Owner = this
-            };
-
-            if ((bool)playerDetails.ShowDialog())
-            {
-                dgPlayers.ItemsSource = _unitOfWork.Players.Find(x => x.Nick == playerDetails.Nick && x.Age == playerDetails.Age).ToList();
-            }
+            int.TryParse(txtPlayersSearch.Text, out int a);
+            dgPlayers.ItemsSource = _unitOfWork.Players.Find(x => x.Nick.Contains(txtPlayersSearch.Text) || x.Age == a).ToList();
         }
 
         private void btnEditPlayer_Click(object sender, RoutedEventArgs e)
@@ -121,9 +113,20 @@ namespace WpfApp
                     Platform    = _unitOfWork.Platforms.GetAll().Single(x => x.Equals(gameDetails.Platform))
                 };
 
-                if (g.IsValid())
+                if (g.IsValid() && gameDetails.SelectedCategories.Count > 0)
                 {
                     _unitOfWork.Games.Add(g);
+
+                    foreach (var item in gameDetails.SelectedCategories)
+                    {
+                        GameCategory gc = new()
+                        {
+                            Game = g,
+                            Category = _unitOfWork.Categories.GetById(((Category)item).ID)
+                        };
+                        _unitOfWork.GameCategories.Add(gc);
+                    }
+
                     _unitOfWork.Complete();
                 }
                 else
@@ -133,16 +136,8 @@ namespace WpfApp
 
         private void btnSearchGames_Click(object sender, RoutedEventArgs e)
         {
-            GameDetails gameDetails = new()
-            {
-                Title = "Search games",
-                Owner = this
-            };
-
-            if ((bool)gameDetails.ShowDialog())
-            {
-                dgGames.ItemsSource = _unitOfWork.Games.Find(x => x.Name == gameDetails.Name && x.Developer == gameDetails.Developer && x.ReleaseYear == gameDetails.ReleaseYear && x.Platform.Equals(gameDetails.Platform)).ToList();
-            }
+            int.TryParse(txtGamesSearch.Text, out int a);
+            dgGames.ItemsSource = _unitOfWork.Games.Find(x => x.Name.Contains(txtGamesSearch.Text) || x.Developer.Contains(txtGamesSearch.Text) || x.ReleaseYear == a || x.Platform.Name.Contains(txtGamesSearch.Text)).ToList();
         }
 
         private void btnEditGame_Click(object sender, RoutedEventArgs e)
@@ -163,12 +158,26 @@ namespace WpfApp
 
             if ((bool)gameDetails.ShowDialog())
             {
-                if (new Game() { Name = gameDetails.Name, Developer = gameDetails.Developer, ReleaseYear = gameDetails.ReleaseYear, Platform = gameDetails.Platform}.IsValid())
+                if (new Game() { Name = gameDetails.Name, Developer = gameDetails.Developer, ReleaseYear = gameDetails.ReleaseYear, Platform = gameDetails.Platform}.IsValid() && gameDetails.SelectedCategories.Count > 0)
                 {
                     selectedGame.Name        = gameDetails.Name;
                     selectedGame.Developer   = gameDetails.Developer;
                     selectedGame.ReleaseYear = gameDetails.ReleaseYear;
                     selectedGame.Platform    = _unitOfWork.Platforms.GetAll().Single(x => x.Equals(gameDetails.Platform));
+
+                    foreach (var item in _unitOfWork.GameCategories.GetAll().Where(gc => gc.Game.Equals(selectedGame)).ToList())
+                        _unitOfWork.GameCategories.Remove(item);
+
+                    foreach (var item in gameDetails.SelectedCategories)
+                    {
+                        GameCategory gc = new()
+                        {
+                            Game = selectedGame,
+                            Category = _unitOfWork.Categories.GetById(((Category)item).ID)
+                        };
+                        _unitOfWork.GameCategories.Add(gc);
+                    }
+
                     _unitOfWork.Complete();
 
                     dgGames.ItemsSource = null;
@@ -220,18 +229,10 @@ namespace WpfApp
 
         private void btnSearchResults_Click(object sender, RoutedEventArgs e)
         {
-            ResultDetails resultDetails = new()
-            {
-                Title = "Search results",
-                Owner = this
-            };
-
-            if ((bool)resultDetails.ShowDialog())
-            {
-                dgResults.ItemsSource = _unitOfWork.Results.Find(x => 
-                x.Player.Equals(resultDetails.Player) && x.GameCategory.Game.Equals(resultDetails.Game) && 
-                x.GameCategory.Category.Equals(resultDetails.Category) && x.Time == resultDetails.Time && x.Date == resultDetails.Date).ToList();
-            }
+            int.TryParse(txtResultsSearch.Text, out int a);
+            dgResults.ItemsSource = _unitOfWork.Results.Find(x => 
+            x.Player.Nick.Contains(txtResultsSearch.Text) || x.GameCategory.Game.Name.Contains(txtResultsSearch.Text) || 
+            x.GameCategory.Category.Name.Contains(txtResultsSearch.Text) || x.Time == a).ToList();
         }
 
         private void btnEditResult_Click(object sender, RoutedEventArgs e)

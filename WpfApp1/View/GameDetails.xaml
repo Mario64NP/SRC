@@ -5,27 +5,54 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp.View"
         mc:Ignorable="d"
-        Title="Game" WindowStartupLocation="CenterOwner" Height="250" Width="300" >
-    <StackPanel VerticalAlignment="Center">
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
-            <Label Content="Name: "/>
-            <TextBox x:Name="txtName" Width="100"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
-            <Label Content="Developer: "/>
-            <TextBox x:Name="txtDeveloper" Width="101"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
-            <Label Content="Release year: "/>
-            <TextBox x:Name="txtReleaseYear" Width="101"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
-            <Label Content="Platform: "/>
-            <ComboBox x:Name="cmbPlatform" Width="101"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button x:Name="btnOK" Content="OK" Margin="10" IsDefault="True" Click="btnOK_Click"/>
-            <Button x:Name="btnCancel" Content="Cancel" Margin="10" IsCancel="True"/>
-        </StackPanel>
-    </StackPanel>
+        Title="Game" WindowStartupLocation="CenterOwner" Height="420" Width="350" >
+    <Window.Background>
+        <LinearGradientBrush EndPoint="0,0" StartPoint="1,1">
+            <GradientStop Color="LightBlue"/>
+            <GradientStop Color="MediumPurple" Offset="0.5"/>
+            <GradientStop Color="Purple" Offset="1"/>
+        </LinearGradientBrush>
+    </Window.Background>
+
+    <Grid VerticalAlignment="Center">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Label Content="Name: " Margin="20,10,0,10"/>
+        <TextBox x:Name="txtName" Grid.Column="1" Height="25" VerticalContentAlignment="Center" Margin="0,0,20,0"/>
+
+        <Label Content="Developer: " Grid.Row="1" Margin="20,10,0,10"/>
+        <TextBox x:Name="txtDeveloper" Grid.Row="1" Grid.Column="1" Height="25" VerticalContentAlignment="Center" Margin="0,0,20,0"/>
+
+        <Label Content="Release year: " Grid.Row="2" Margin="20,10,0,10"/>
+        <TextBox x:Name="txtReleaseYear" Grid.Row="2" Grid.Column="1" Height="25" VerticalContentAlignment="Center" Margin="0,0,20,0"/>
+
+        <Label Content="Platform: " Grid.Row="3" Margin="20,10,0,10"/>
+        <ComboBox x:Name="cmbPlatform" Grid.Row="3" Grid.Column="1" Height="25" Margin="0,0,20,0"/>
+
+        <Label Content="Allowed categories : " Grid.Row="4" Margin="20,10,0,10"/>
+        <ListView Name="lvCategories"  Grid.Row="5" Grid.ColumnSpan="2" Margin="20,0,20,0">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}"/>
+                    <GridViewColumn Header="Description" DisplayMemberBinding="{Binding Description}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <Button x:Name="btnOK" Content="OK" Margin="10" IsDefault="True" Click="btnOK_Click" Width="70" Height="25" Grid.Row="6"/>
+        <Button x:Name="btnCancel" Content="Cancel" Margin="10" IsCancel="True" Width="70" Grid.Row="6" Grid.Column="1"/>
+
+    </Grid>
 </Window>

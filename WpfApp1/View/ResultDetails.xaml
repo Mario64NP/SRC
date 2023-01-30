@@ -5,31 +5,46 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp.View"
         mc:Ignorable="d"
-        Title="ResultDetails" WindowStartupLocation="CenterOwner" Height="300" Width="300">
-    <StackPanel VerticalAlignment="Center">
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
-            <Label Content="Player: "/>
-            <ComboBox Name="cmbPlayer" Width="101"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
-            <Label Content="Game: "/>
-            <ComboBox Name="cmbGame" Width="101" SelectionChanged="cmbGame_SelectionChanged"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
-            <Label Content="Category: "/>
-            <ComboBox Name="cmbCategory" Width="101"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
-            <Label Content="Time: "/>
-            <TextBox Name="txtTime" Width="100"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
-            <Label Content="Date: "/>
-            <DatePicker Name="dtpDate"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button x:Name="btnOK" Content="OK" Margin="10" IsDefault="True" Click="btnOK_Click"/>
-            <Button x:Name="btnCancel" Content="Cancel" Margin="10" IsCancel="True"/>
-        </StackPanel>
-    </StackPanel>
+        Title="ResultDetails" WindowStartupLocation="CenterOwner" Height="350" Width="300">
+    <Window.Background>
+        <LinearGradientBrush EndPoint="0,0" StartPoint="1,1">
+            <GradientStop Color="LightBlue"/>
+            <GradientStop Color="MediumPurple" Offset="0.5"/>
+            <GradientStop Color="Purple" Offset="1"/>
+        </LinearGradientBrush>
+    </Window.Background>
+    
+    <Grid VerticalAlignment="Center">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Label Content="Player: " Margin="20,10,0,10"/>
+        <ComboBox Name="cmbPlayer" Width="100" Grid.Column="1" Height="25"/>
+
+        <Label Content="Game: " Grid.Row="1" Margin="20,10,0,10"/>
+        <ComboBox Name="cmbGame" Width="100" SelectionChanged="cmbGame_SelectionChanged" Grid.Row="1" Grid.Column="1" Height="25"/>
+
+        <Label Content="Category: " Grid.Row="2" Margin="20,10,0,10"/>
+        <ComboBox Name="cmbCategory" Width="100" Grid.Row="2" Grid.Column="1" Height="25"/>
+
+        <Label Content="Time: " Grid.Row="3" Margin="20,10,0,10"/>
+        <TextBox Name="txtTime" Width="100" Grid.Row="3" Grid.Column="1" Height="25" VerticalContentAlignment="Center"/>
+
+        <Label Content="Date: " Grid.Row="4" Margin="20,10,0,10"/>
+        <DatePicker Name="dtpDate" Grid.Row="4" Grid.Column="1" Height="25" Width="100"/>
+
+        <Button x:Name="btnOK" Content="OK" Margin="10" IsDefault="True" Click="btnOK_Click" Height="25" Width="70" Grid.Row="5"/>
+        <Button x:Name="btnCancel" Content="Cancel" Margin="10" IsCancel="True" Width="70" Grid.Row="5" Grid.Column="1"/>
+
+    </Grid>
 </Window>

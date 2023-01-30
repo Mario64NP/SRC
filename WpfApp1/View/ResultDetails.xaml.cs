@@ -45,6 +45,12 @@ namespace WpfApp.View
 
         private void btnOK_Click(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrEmpty(txtTime.Text) || Time <= 0)
+            {
+                txtTime.Background = System.Windows.Media.Brushes.Red;
+                MessageBox.Show("Time can't be empty or less than 1!", "Invalid nick", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             DialogResult = true;
         }
 

@@ -22,7 +22,7 @@
                     <Grid>
                         <StackPanel Orientation="Horizontal">
                             <TextBox Name="txtPlayersSearch" Width="100" Height="25" Margin="10,0,0,0" Background="{x:Null}" VerticalContentAlignment="Center"/>
-                            <Button Name="btnSearchPlayers" Content="Search" Margin="10" Width="70" Height="25" Click="btnSearchPlayers_Click"/>
+                            <Button Name="btnSearchPlayers" Content="Search" Margin="10" Width="70" Height="25" Click="btnSearchPlayers_Click" MouseEnter="btnSearchPlayers_MouseEnter" MouseLeave="btnSearchPlayers_MouseLeave"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                             <Button Name="btnAddPlayer" Content="Add" Margin="10" Width="70" Height="25" Click="btnAddPlayer_Click"/>
@@ -38,7 +38,7 @@
                     <Grid>
                         <StackPanel Orientation="Horizontal">
                             <TextBox Name="txtGamesSearch" Width="100" Height="25" Margin="10,0,0,0" Background="{x:Null}" VerticalContentAlignment="Center"/>
-                            <Button Name="btnSearchGames" Content="Search" Margin="10" Width="60" Height="25" Click="btnSearchGames_Click"/>
+                            <Button Name="btnSearchGames" Content="Search" Margin="10" Width="60" Height="25" Click="btnSearchGames_Click" MouseEnter="btnSearchGames_MouseEnter" MouseLeave="btnSearchGames_MouseLeave"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                             <Button Name="btnAddGame"  Content="Add" Margin="10" Width="60" Height="25" Click="btnAddGame_Click"/>
@@ -54,7 +54,7 @@
                     <Grid>
                         <StackPanel Orientation="Horizontal">
                             <TextBox Name="txtResultsSearch" Width="100" Height="25" Margin="10,0,0,0" Background="{x:Null}" VerticalContentAlignment="Center"/>
-                            <Button Name="btnSearchResults" Content="Search" Margin="10" Width="60" Height="25" Click="btnSearchResults_Click"/>
+                            <Button Name="btnSearchResults" Content="Search" Margin="10" Width="60" Height="25" Click="btnSearchResults_Click" MouseEnter="btnSearchResults_MouseEnter" MouseLeave="btnSearchResults_MouseLeave"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                             <Button Name="btnAddResult" Content="Add" Margin="10" Width="60" Height="25" Click="btnAddResult_Click"/>

@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
+using System.Windows.Media.Animation;
 using WpfApp.Controller;
 using WpfApp.DataAccessLayer.Implementations;
 using WpfApp.DataAccessLayer.Interfaces;
@@ -288,6 +290,42 @@ namespace WpfApp
             dgResults.Columns[2].Visibility = Visibility.Collapsed;
             dgResults.Columns[3].Visibility = Visibility.Collapsed;
             dgResults.Columns[5].Visibility = Visibility.Collapsed;
+        }
+
+        private void btnSearchPlayers_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            DoubleAnimation sizeAnimation = new(100, new Duration(TimeSpan.FromSeconds(0.3)));
+            btnSearchPlayers.BeginAnimation(WidthProperty, sizeAnimation);
+        }
+
+        private void btnSearchPlayers_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            DoubleAnimation sizeAnimation = new(75, new Duration(TimeSpan.FromSeconds(0.3)));
+            btnSearchPlayers.BeginAnimation(WidthProperty, sizeAnimation);
+        }
+
+        private void btnSearchGames_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            DoubleAnimation sizeAnimation = new(100, new Duration(TimeSpan.FromSeconds(0.3)));
+            btnSearchGames.BeginAnimation(WidthProperty, sizeAnimation);
+        }
+
+        private void btnSearchGames_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            DoubleAnimation sizeAnimation = new(75, new Duration(TimeSpan.FromSeconds(0.3)));
+            btnSearchGames.BeginAnimation(WidthProperty, sizeAnimation);
+        }
+
+        private void btnSearchResults_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            DoubleAnimation sizeAnimation = new(100, new Duration(TimeSpan.FromSeconds(0.3)));
+            btnSearchResults.BeginAnimation(WidthProperty, sizeAnimation);
+        }
+
+        private void btnSearchResults_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            DoubleAnimation sizeAnimation = new(75, new Duration(TimeSpan.FromSeconds(0.3)));
+            btnSearchResults.BeginAnimation(WidthProperty, sizeAnimation);
         }
     }
 }

@@ -5,46 +5,41 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SpeedrunCommunity.View"
         mc:Ignorable="d"
-        Title="ResultDetails" WindowStartupLocation="CenterOwner" Height="350" Width="300">
-    <Window.Background>
-        <LinearGradientBrush EndPoint="0,0" StartPoint="1,1">
-            <GradientStop Color="LightBlue"/>
-            <GradientStop Color="MediumPurple" Offset="0.5"/>
-            <GradientStop Color="Purple" Offset="1"/>
-        </LinearGradientBrush>
-    </Window.Background>
-    
-    <Grid VerticalAlignment="Center">
+        Title="ResultDetails" WindowStartupLocation="CenterOwner" Height="400" Width="350">
+
+    <Grid VerticalAlignment="Center" Margin="10">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Label Content="Player: " Margin="20,10,0,10"/>
-        <ComboBox Name="cmbPlayer" Width="100" Grid.Column="1" Height="25"/>
+        <Label Content="Player: " Margin="0,5,10,5" VerticalAlignment="Center"/>
+        <ComboBox Name="cmbPlayer" Grid.Column="1" Height="32" Margin="0,5"/>
 
-        <Label Content="Game: " Grid.Row="1" Margin="20,10,0,10"/>
-        <ComboBox Name="cmbGame" Width="100" SelectionChanged="cmbGame_SelectionChanged" Grid.Row="1" Grid.Column="1" Height="25"/>
+        <Label Content="Game: " Grid.Row="1" Margin="0,5,10,5" VerticalAlignment="Center"/>
+        <ComboBox Name="cmbGame" Grid.Row="1" Grid.Column="1" Height="32" SelectionChanged="cmbGame_SelectionChanged" Margin="0,5"/>
 
-        <Label Content="Category: " Grid.Row="2" Margin="20,10,0,10"/>
-        <ComboBox Name="cmbCategory" Width="100" Grid.Row="2" Grid.Column="1" Height="25"/>
+        <Label Content="Category: " Grid.Row="2" Margin="0,5,10,5" VerticalAlignment="Center"/>
+        <ComboBox Name="cmbCategory" Grid.Row="2" Grid.Column="1" Height="32" Margin="0,5"/>
 
-        <Label Content="Time: " Grid.Row="3" Margin="20,10,0,10"/>
-        <TextBox Name="txtTime" Width="100" Grid.Row="3" Grid.Column="1" Height="25" VerticalContentAlignment="Center"/>
+        <Label Content="Time: " Grid.Row="3" Margin="0,5,10,5" VerticalAlignment="Center"/>
+        <TextBox Name="txtTime" Grid.Row="3" Grid.Column="1" Height="32" VerticalContentAlignment="Center" Margin="0,5"/>
 
-        <Label Content="Date: " Grid.Row="4" Margin="20,10,0,10"/>
-        <DatePicker Name="dtpDate" Grid.Row="4" Grid.Column="1" Height="25" Width="100"/>
+        <Label Content="Date: " Grid.Row="4" Margin="0,5,10,5" VerticalAlignment="Center"/>
+        <DatePicker Name="dtpDate" Grid.Row="4" Grid.Column="1" Height="32" Margin="0,5"/>
 
-        <Button x:Name="btnOK" Content="OK" Margin="10" IsDefault="True" Click="btnOK_Click" Height="25" Width="70" Grid.Row="5"/>
-        <Button x:Name="btnCancel" Content="Cancel" Margin="10" IsCancel="True" Width="70" Grid.Row="5" Grid.Column="1"/>
+        <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <Button x:Name="btnOK" Content="OK" Margin="5" IsDefault="True" Click="btnOK_Click" Height="32" Width="80" Style="{StaticResource AccentButtonStyle}"/>
+            <Button x:Name="btnCancel" Content="Cancel" Margin="5" IsCancel="True" Height="32" Width="80"/>
+        </StackPanel>
 
     </Grid>
 </Window>

@@ -16,7 +16,7 @@ namespace SpeedrunCommunity.Repositories.Implementations
             _dbContext = dbContext;
         }
 
-        public TEntity GetById(int id)
+        public TEntity? GetById(int id)
         {
             return _dbContext.Set<TEntity>().Find(id);
         }

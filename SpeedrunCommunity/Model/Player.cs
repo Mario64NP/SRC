@@ -3,7 +3,7 @@
     public class Player
     {
         public int ID { get; set; }
-        public string Nick { get; set; }
+        public required string Nick { get; set; }
         public int Age { get; set; }
 
         public override string ToString()
@@ -17,6 +17,11 @@
                 return false;
             else
                 return p.ID == ID;
+        }
+
+        public override int GetHashCode()
+        {
+            return ID.GetHashCode();
         }
 
         public bool IsValid()

@@ -3,8 +3,8 @@
     public class Category
     {
         public int ID { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
 
         public override string ToString()
         {
@@ -17,6 +17,11 @@
                 return false;
             else
                 return c.ID == ID;
+        }
+
+        public override int GetHashCode()
+        {
+            return ID.GetHashCode();
         }
     }
 }

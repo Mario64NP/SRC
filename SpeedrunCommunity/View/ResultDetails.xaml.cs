@@ -59,7 +59,7 @@ namespace SpeedrunCommunity.View
             List<Category> list = new();
 
             foreach (var item in _unitOfWork.GameCategories.Find(gc => gc.Game.Equals((Game)cmbGame.SelectedItem)).ToList())
-                list.Add(_unitOfWork.Categories.GetById(item.Category.ID));
+                list.Add(_unitOfWork.Categories.GetById(item.CategoryID)!);
 
             cmbCategory.ItemsSource = list;
             cmbCategory.SelectedIndex = 0;

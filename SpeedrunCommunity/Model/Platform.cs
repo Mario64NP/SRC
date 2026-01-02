@@ -3,7 +3,7 @@
     public class Platform
     {
         public int ID { get; set; }
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         public override string ToString()
         {
@@ -16,6 +16,11 @@
                 return false;
             else
                 return p.ID == ID;
+        }
+
+        public override int GetHashCode()
+        {
+            return ID.GetHashCode();
         }
     }
 }

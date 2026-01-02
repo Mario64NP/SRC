@@ -124,7 +124,7 @@ namespace SpeedrunCommunity
                         GameCategory gc = new()
                         {
                             Game = g,
-                            Category = _unitOfWork.Categories.GetById(((Category)item).ID)
+                            Category = _unitOfWork.Categories.GetById(((Category)item).ID)!
                         };
                         _unitOfWork.GameCategories.Add(gc);
                     }
@@ -175,7 +175,7 @@ namespace SpeedrunCommunity
                         GameCategory gc = new()
                         {
                             Game = selectedGame,
-                            Category = _unitOfWork.Categories.GetById(((Category)item).ID)
+                            Category = _unitOfWork.Categories.GetById(((Category)item).ID)!
                         };
                         _unitOfWork.GameCategories.Add(gc);
                     }
@@ -211,10 +211,13 @@ namespace SpeedrunCommunity
 
             if ((bool)resultDetails.ShowDialog())
             {
+                GameCategory selectedGameCategory = _unitOfWork.GameCategories.GetAll().Single(x => x.Game.Equals(resultDetails.Game) && x.Category.Equals(resultDetails.Category));
                 Result r = new()
                 {
                     Player       = _unitOfWork.Players.GetAll().Single(x => x.Equals(resultDetails.Player)),
-                    GameCategory = _unitOfWork.GameCategories.GetAll().Single(x => x.Game.Equals(resultDetails.Game) && x.Category.Equals(resultDetails.Category)),
+                    GameCategory = selectedGameCategory,
+                    Game         = selectedGameCategory.Game,
+                    Category     = selectedGameCategory.Category,
                     Time         = resultDetails.Time,
                     Date         = resultDetails.Date
                 };
@@ -257,9 +260,12 @@ namespace SpeedrunCommunity
 
             if ((bool)resultDetails.ShowDialog())
             {
+                GameCategory selectedGameCategory = _unitOfWork.GameCategories.GetAll().Single(gc => gc.Game.Equals(resultDetails.Game) && gc.Category.Equals(resultDetails.Category));
                 if (new Result() { 
                     Player       = resultDetails.Player, 
-                    GameCategory = _unitOfWork.GameCategories.GetAll().Single(gc => gc.Game.Equals(resultDetails.Game) && gc.Category.Equals(resultDetails.Category)), 
+                    GameCategory = selectedGameCategory, 
+                    Game         = selectedGameCategory.Game, 
+                    Category     = selectedGameCategory.Category, 
                     Time         = resultDetails.Time, 
                     Date         = resultDetails.Date}.IsValid())
                 {

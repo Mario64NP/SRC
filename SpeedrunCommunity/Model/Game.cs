@@ -3,10 +3,10 @@
     public class Game
     {
         public int ID { get; set; }
-        public string Name { get; set; }
-        public string Developer { get; set; }
+        public required string Name { get; set; }
+        public required string Developer { get; set; }
         public int ReleaseYear { get; set; }
-        public Platform Platform { get; set; }
+        public required Platform Platform { get; set; }
         public override string ToString()
         {
             return Name;
@@ -17,6 +17,11 @@
                 return false;
             else
                 return g.ID == ID;
+        }
+
+        public override int GetHashCode()
+        {
+            return ID.GetHashCode();
         }
 
         public bool IsValid()

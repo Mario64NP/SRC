@@ -16,13 +16,13 @@ namespace SpeedrunCommunity.ViewModel
         private readonly IDialogService _dialogService;
 
         // Collections
-        private ObservableCollection<Player> _players;
+        private ObservableCollection<Player> _players = null!;
         public ObservableCollection<Player> Players { get => _players; set { _players = value; OnPropertyChanged(); } }
 
-        private ObservableCollection<Game> _games;
+        private ObservableCollection<Game> _games = null!;
         public ObservableCollection<Game> Games { get => _games; set { _games = value; OnPropertyChanged(); } }
 
-        private ObservableCollection<Result> _results;
+        private ObservableCollection<Result> _results = null!;
         public ObservableCollection<Result> Results { get => _results; set { _results = value; OnPropertyChanged(); } }
 
         // Selected Items

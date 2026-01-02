@@ -6,6 +6,30 @@
         xmlns:local="clr-namespace:SpeedrunCommunity"
         mc:Ignorable="d"
         Title="Speedrun Community" Height="350" Width="600" WindowStartupLocation="CenterScreen">
+    
+    <Window.Resources>
+        <Style x:Key="SearchButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Height" Value="25"/>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Width" To="100" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Width" To="75" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
     <Window.Background>
         <LinearGradientBrush EndPoint="0,0" StartPoint="1,1">
             <GradientStop Color="LightBlue"/>
@@ -16,50 +40,80 @@
 
     <StackPanel>
         <TabControl Background="Transparent">
+            <!-- PLAYERS TAB -->
             <TabItem Header="Players" Background="Transparent">
                 <StackPanel Background="Transparent">
-                    <DataGrid Name="dgPlayers" CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="True"/>
+                    <DataGrid ItemsSource="{Binding Players}" SelectedItem="{Binding SelectedPlayer}" 
+                              AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="True" Height="200" Margin="5">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding ID}" Width="50"/>
+                            <DataGridTextColumn Header="Nick" Binding="{Binding Nick}" Width="*"/>
+                            <DataGridTextColumn Header="Age" Binding="{Binding Age}" Width="50"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
                     <Grid>
                         <StackPanel Orientation="Horizontal">
-                            <TextBox Name="txtPlayersSearch" Width="100" Height="25" Margin="10,0,0,0" Background="{x:Null}" VerticalContentAlignment="Center"/>
-                            <Button Name="btnSearchPlayers" Content="Search" Margin="10" Width="70" Height="25" Click="btnSearchPlayers_Click" MouseEnter="btnSearchPlayers_MouseEnter" MouseLeave="btnSearchPlayers_MouseLeave"/>
+                            <TextBox Text="{Binding PlayerSearchText, UpdateSourceTrigger=PropertyChanged}" Width="100" Height="25" Margin="10,0,0,0" Background="{x:Null}" VerticalContentAlignment="Center"/>
+                            <Button Content="Search" Width="70" Style="{StaticResource SearchButtonStyle}" Command="{Binding SearchPlayerCommand}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button Name="btnAddPlayer" Content="Add" Margin="10" Width="70" Height="25" Click="btnAddPlayer_Click"/>
-                            <Button Name="btnEditPlayer" Content="Edit" Margin="10" Width="70" Height="25" Click="btnEditPlayer_Click"/>
-                            <Button Name="btnDeletePlayer" Content="Delete" Margin="10" Width="70" Height="25" Click="btnDeletePlayer_Click"/>
+                            <Button Content="Add" Margin="10" Width="70" Height="25" Command="{Binding AddPlayerCommand}"/>
+                            <Button Content="Edit" Margin="10" Width="70" Height="25" Command="{Binding EditPlayerCommand}"/>
+                            <Button Content="Delete" Margin="10" Width="70" Height="25" Command="{Binding DeletePlayerCommand}"/>
                         </StackPanel>
                     </Grid>
                 </StackPanel>
             </TabItem>
+            
+            <!-- GAMES TAB -->
             <TabItem Header="Games" Background="Transparent">
                 <StackPanel Background="Transparent">
-                    <DataGrid Name="dgGames" CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="True"/>
+                    <DataGrid ItemsSource="{Binding Games}" SelectedItem="{Binding SelectedGame}" 
+                              AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="True" Height="200" Margin="5">
+                         <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding ID}" Width="50"/>
+                            <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                            <DataGridTextColumn Header="Developer" Binding="{Binding Developer}" Width="*"/>
+                            <DataGridTextColumn Header="Year" Binding="{Binding ReleaseYear}" Width="60"/>
+                            <DataGridTextColumn Header="Platform" Binding="{Binding Platform.Name}" Width="100"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
                     <Grid>
                         <StackPanel Orientation="Horizontal">
-                            <TextBox Name="txtGamesSearch" Width="100" Height="25" Margin="10,0,0,0" Background="{x:Null}" VerticalContentAlignment="Center"/>
-                            <Button Name="btnSearchGames" Content="Search" Margin="10" Width="60" Height="25" Click="btnSearchGames_Click" MouseEnter="btnSearchGames_MouseEnter" MouseLeave="btnSearchGames_MouseLeave"/>
+                            <TextBox Text="{Binding GameSearchText, UpdateSourceTrigger=PropertyChanged}" Width="100" Height="25" Margin="10,0,0,0" Background="{x:Null}" VerticalContentAlignment="Center"/>
+                            <Button Content="Search" Width="60" Style="{StaticResource SearchButtonStyle}" Command="{Binding SearchGameCommand}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button Name="btnAddGame"  Content="Add" Margin="10" Width="60" Height="25" Click="btnAddGame_Click"/>
-                            <Button Name="btnEditGame" Content="Edit" Margin="10" Width="60" Height="25" Click="btnEditGame_Click"/>
-                            <Button Name="btnDeleteGame" Content="Delete" Margin="10" Width="60" Height="25" Click="btnDeleteGame_Click"/>
+                            <Button Content="Add" Margin="10" Width="60" Height="25" Command="{Binding AddGameCommand}"/>
+                            <Button Content="Edit" Margin="10" Width="60" Height="25" Command="{Binding EditGameCommand}"/>
+                            <Button Content="Delete" Margin="10" Width="60" Height="25" Command="{Binding DeleteGameCommand}"/>
                         </StackPanel>
                     </Grid>
                 </StackPanel>
             </TabItem>
+            
+            <!-- RESULTS TAB -->
             <TabItem Header="Results" Background="Transparent">
                 <StackPanel Background="Transparent">
-                    <DataGrid Name="dgResults" AutoGeneratedColumns="dgResults_AutoGeneratedColumns" CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="True"/>
+                    <DataGrid ItemsSource="{Binding Results}" SelectedItem="{Binding SelectedResult}" 
+                              AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" IsReadOnly="True" Height="200" Margin="5">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Player" Binding="{Binding Player.Nick}" Width="*"/>
+                            <DataGridTextColumn Header="Game" Binding="{Binding Game.Name}" Width="*"/>
+                            <DataGridTextColumn Header="Category" Binding="{Binding Category.Name}" Width="*"/>
+                            <DataGridTextColumn Header="Time (s)" Binding="{Binding Time}" Width="60"/>
+                            <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=d}" Width="100"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
                     <Grid>
                         <StackPanel Orientation="Horizontal">
-                            <TextBox Name="txtResultsSearch" Width="100" Height="25" Margin="10,0,0,0" Background="{x:Null}" VerticalContentAlignment="Center"/>
-                            <Button Name="btnSearchResults" Content="Search" Margin="10" Width="60" Height="25" Click="btnSearchResults_Click" MouseEnter="btnSearchResults_MouseEnter" MouseLeave="btnSearchResults_MouseLeave"/>
+                            <TextBox Text="{Binding ResultSearchText, UpdateSourceTrigger=PropertyChanged}" Width="100" Height="25" Margin="10,0,0,0" Background="{x:Null}" VerticalContentAlignment="Center"/>
+                            <Button Content="Search" Width="60" Style="{StaticResource SearchButtonStyle}" Command="{Binding SearchResultCommand}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button Name="btnAddResult" Content="Add" Margin="10" Width="60" Height="25" Click="btnAddResult_Click"/>
-                            <Button Name="btnEditResult" Content="Edit" Margin="10" Width="60" Height="25" Click="btnEditResult_Click"/>
-                            <Button Name="btnDeleteResult" Content="Delete" Margin="10" Width="60" Height="25" Click="btnDeleteResult_Click"/>
+                            <Button Content="Add" Margin="10" Width="60" Height="25" Command="{Binding AddResultCommand}"/>
+                            <Button Content="Edit" Margin="10" Width="60" Height="25" Command="{Binding EditResultCommand}"/>
+                            <Button Content="Delete" Margin="10" Width="60" Height="25" Command="{Binding DeleteResultCommand}"/>
                         </StackPanel>
                     </Grid>
                 </StackPanel>

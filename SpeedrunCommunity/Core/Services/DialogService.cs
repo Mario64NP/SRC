@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Windows;
 using SpeedrunCommunity.Domain;
 using SpeedrunCommunity.View;
@@ -59,7 +60,7 @@ namespace SpeedrunCommunity.Core.Services
             return result;
         }
 
-        public bool ShowEditGameDialog(string currentName, string currentDeveloper, int currentReleaseYear, Platform currentPlatform, out string newName, out string newDeveloper, out int newReleaseYear, out Platform newPlatform, out IList selectedCategories)
+        public bool ShowEditGameDialog(string currentName, string currentDeveloper, int currentReleaseYear, Platform currentPlatform, IList existingCategories, out string newName, out string newDeveloper, out int newReleaseYear, out Platform newPlatform, out IList selectedCategories)
         {
             GameDetails dialog = new GameDetails
             {
@@ -70,6 +71,9 @@ namespace SpeedrunCommunity.Core.Services
                 ReleaseYear = currentReleaseYear,
                 Platform = currentPlatform,
             };
+            
+            if (existingCategories is IEnumerable<Category> categories)
+                dialog.SetSelectedCategories(categories);
 
             bool result = dialog.ShowDialog() == true;
             newName = dialog.Name;

@@ -34,6 +34,18 @@ namespace SpeedrunCommunity.View
                 lvCategories.Items.Add(item);
         }
 
+        public void SetSelectedCategories(IEnumerable<Category> categories)
+        {
+            foreach (var category in categories)
+                foreach (var item in lvCategories.Items)
+                    if (item is Category c && c.ID == category.ID)
+                    {
+                        lvCategories.SelectedItems.Add(item);
+                        break;
+                    }
+            lvCategories.Focus();
+        }
+
         private void btnOK_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(txtName.Text))

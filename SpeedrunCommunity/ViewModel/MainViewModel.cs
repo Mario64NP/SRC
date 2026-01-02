@@ -180,7 +180,12 @@ namespace SpeedrunCommunity.ViewModel
         {
             if (SelectedGame == null) return;
 
-            if (_dialogService.ShowEditGameDialog(SelectedGame.Name, SelectedGame.Developer, SelectedGame.ReleaseYear, SelectedGame.Platform, out string newName, out string newDeb, out int newYear, out Platform newPlat, out System.Collections.IList newCats))
+            var currentCategories = _unitOfWork.GameCategories.GetAll()
+                                        .Where(gc => gc.Game.Equals(SelectedGame))
+                                        .Select(gc => gc.Category)
+                                        .ToList();
+
+            if (_dialogService.ShowEditGameDialog(SelectedGame.Name, SelectedGame.Developer, SelectedGame.ReleaseYear, SelectedGame.Platform, currentCategories, out string newName, out string newDeb, out int newYear, out Platform newPlat, out System.Collections.IList newCats))
             {
                 var tempGame = new Game { Name = newName, Developer = newDeb, ReleaseYear = newYear, Platform = newPlat };
                 if (tempGame.IsValid() && newCats.Count > 0)

@@ -15,12 +15,6 @@ namespace SpeedrunCommunity.Persistence
 
         public SRCContext()
         {
-            var builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-            var configuration = builder.Build();
-            if (configuration["DatabaseProvider"] == "Sqlite")
-            {
-                Database.EnsureCreated();
-            }
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -1,5 +1,6 @@
 ﻿using SpeedrunCommunity.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace SpeedrunCommunity.Persistence
 {
@@ -12,9 +13,30 @@ namespace SpeedrunCommunity.Persistence
         public DbSet<GameCategory> GameCategories { get; set; } = null!;
         public DbSet<Result> Results { get; set; } = null!;
 
+        public SRCContext()
+        {
+            var builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+            var configuration = builder.Build();
+            if (configuration["DatabaseProvider"] == "Sqlite")
+            {
+                Database.EnsureCreated();
+            }
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Napredne;Integrated Security=True;");
+            var builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+            var configuration = builder.Build();
+            string provider = configuration["DatabaseProvider"] ?? "Sqlite";
+
+            if (provider == "Sqlite")
+            {
+                optionsBuilder.UseSqlite(configuration.GetConnectionString("Sqlite"));
+            }
+            else
+            {
+                optionsBuilder.UseSqlServer(configuration.GetConnectionString("SqlServer"));
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,60 +1,40 @@
-# Speedrunning Community (WPF)
+# Speedrun Community (WPF)
 
-A WPF rework of the original Windows Forms CRUD application for managing speedrun records across different games and categories. This version introduces a more modern UI and a cleaner backend structure using Entity Framework and code-first migrations.
+A modern WPF application for managing speedrun records, built with clean MVVM architecture and Microsoft's Fluent Design System.
 
----
+![Badge](https://img.shields.io/badge/Platform-WPF-blue) ![Badge](https://img.shields.io/badge/.NET-10.0-purple) ![Badge](https://img.shields.io/badge/UI-Fluent%20Design-0078D7)
 
-## 🕹️ Features
+## ✨ Features
 
-- Keep track of, add, edit, and delete speedrun records, players, games, categories, and platforms
-- Uses Entity Framework for ORM with code-first migrations
-- Implements Repository and Unit of Work design patterns
-- Structured relational database model
-- Improved separation of concerns and maintainability
+- **Players** - Manage speedrun community members
+- **Games** - Track games with platforms and categories
+- **Results** - Record and browse speedrun times
 
----
+## 🏗️ Technical Highlights
+
+- **Architecture**: MVVM with Dependency Injection
+- **Data Access**: Entity Framework Core (direct DbContext usage)
+- **UI/UX**: [iNKORE UI.WPF.Modern](https://github.com/iNKORE-NET/UI.WPF.Modern) with Acrylic backdrop
+- **Database**: SQLite (auto-created on first run)
 
 ## 💻 Tech Stack
 
-- **Framework:** WPF (.NET)
-- **Language:** C#
-- **ORM:** Entity Framework
-- **Database:** SQL Server (local instance)
+| Component | Technology |
+|-----------|------------|
+| Framework | WPF (.NET 10) |
+| Language | C# 14 |
+| UI Library | iNKORE.UI.WPF.Modern |
+| ORM | Entity Framework Core 10 |
+| Database | SQLite or SQL Server |
+
+## 🚀 Getting Started
+
+1. **Clone** this repository
+2. **Open** `SRC.sln` in Visual Studio 2022+
+3. **Run** - The database is automatically created and seeded on first launch
+
+> **Note**: No manual database setup required. `EnsureCreated()` handles everything.
 
 ---
 
-## 🗂️ Data Structure
-
-- **Players**: Nick, Age  
-- **Games**: Title, Genre, Platform  
-- **Platforms**: Name  
-- **Categories**: Name, Description  
-- **Records**: Player, Game, Category, Timer, Date
-
----
-
-## 🚀 How to Run
-
-1. Clone this repository:
-
-    ```bash
-    git clone https://github.com/Mario64NP/SRC.git
-    ```
-
-2. Open the `.sln` file in Visual Studio
-
-3. Ensure your local SQL Server instance is running
-
-4. Run Entity Framework migrations to initialize the database:
-
-    ```bash
-    Update-Database
-    ```
-
-5. Build and run the app via Visual Studio
-
----
-
-## 📦 Notes
-
-This version is a rework of the original [Windows Forms version](https://github.com/Mario64NP/SRC-PS), with improvements in architecture, maintainability, and tooling.
+*Reworked from a [legacy Windows Forms app](https://github.com/Mario64NP/SRC-PS) to demonstrate modern WPF standards.*

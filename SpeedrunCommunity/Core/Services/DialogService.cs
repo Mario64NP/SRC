@@ -1,129 +1,166 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Windows;
-using SpeedrunCommunity.Domain;
-using SpeedrunCommunity.View;
+using SpeedrunCommunity.Models;
+using SpeedrunCommunity.Views.Dialogs;
+using SpeedrunCommunity.ViewModels.Dialogs;
 
-namespace SpeedrunCommunity.Core.Services
+namespace SpeedrunCommunity.Core.Services;
+
+public class DialogService
 {
-    public class DialogService : IDialogService
+    private static Window GetOwner() => Application.Current.MainWindow;
+
+    public static bool ShowAddPlayerDialog(out string nick, out int age)
     {
-        private Window GetOwner()
+        var vm = new PlayerDetailsViewModel();
+        var win = new PlayerDetails { DataContext = vm, Owner = GetOwner() };
+        vm.RequestClose += (s, e) => { win.DialogResult = e; win.Close(); };
+
+        if (win.ShowDialog() == true)
         {
-            return Application.Current.MainWindow;
+            nick = vm.Nick;
+            age = vm.Age!.Value;
+
+            return true;
         }
 
-        public bool ShowAddPlayerDialog(out string nick, out int age)
-        {
-            PlayerDetails dialog = new PlayerDetails
-            {
-                Title = "Add a new player",
-                Owner = GetOwner()
-            };
+        nick = string.Empty;
+        age = 0;
 
-            bool result = dialog.ShowDialog() == true;
-            nick = dialog.Nick;
-            age = dialog.Age;
-            return result;
-        }
-
-        public bool ShowEditPlayerDialog(string currentNick, int currentAge, out string newNick, out int newAge)
-        {
-            PlayerDetails dialog = new PlayerDetails
-            {
-                Title = "Edit a player",
-                Owner = GetOwner(),
-                Nick = currentNick,
-                Age = currentAge
-            };
-
-            bool result = dialog.ShowDialog() == true;
-            newNick = dialog.Nick;
-            newAge = dialog.Age;
-            return result;
-        }
-
-        public bool ShowAddGameDialog(out string name, out string developer, out int releaseYear, out Platform platform, out IList selectedCategories)
-        {
-            GameDetails dialog = new GameDetails
-            {
-                Title = "Add a new game",
-                Owner = GetOwner()
-            };
-
-            bool result = dialog.ShowDialog() == true;
-            name = dialog.Name;
-            developer = dialog.Developer;
-            releaseYear = dialog.ReleaseYear;
-            platform = dialog.Platform;
-            selectedCategories = dialog.SelectedCategories;
-            return result;
-        }
-
-        public bool ShowEditGameDialog(string currentName, string currentDeveloper, int currentReleaseYear, Platform currentPlatform, IList existingCategories, out string newName, out string newDeveloper, out int newReleaseYear, out Platform newPlatform, out IList selectedCategories)
-        {
-            GameDetails dialog = new GameDetails
-            {
-                Title = "Edit a game",
-                Owner = GetOwner(),
-                Name = currentName,
-                Developer = currentDeveloper,
-                ReleaseYear = currentReleaseYear,
-                Platform = currentPlatform,
-            };
-            
-            if (existingCategories is IEnumerable<Category> categories)
-                dialog.SetSelectedCategories(categories);
-
-            bool result = dialog.ShowDialog() == true;
-            newName = dialog.Name;
-            newDeveloper = dialog.Developer;
-            newReleaseYear = dialog.ReleaseYear;
-            newPlatform = dialog.Platform;
-            selectedCategories = dialog.SelectedCategories;
-            return result;
-        }
-
-        public bool ShowAddResultDialog(out Player player, out Game game, out Category category, out int time, out System.DateTime date)
-        {
-            ResultDetails dialog = new ResultDetails
-            {
-                Title = "Add a new result",
-                Owner = GetOwner()
-            };
-
-            bool result = dialog.ShowDialog() == true;
-            player = dialog.Player;
-            game = dialog.Game;
-            category = dialog.Category;
-            time = dialog.Time;
-            date = dialog.Date;
-            return result;
-        }
-
-        public bool ShowEditResultDialog(Player currentPlayer, Game currentGame, Category currentCategory, int currentTime, System.DateTime currentDate, out int newTime, out System.DateTime newDate)
-        {
-            ResultDetails dialog = new ResultDetails
-            {
-                Title = "Edit a result",
-                Owner = GetOwner(),
-                Player = currentPlayer,
-                Game = currentGame,
-                Category = currentCategory,
-                Time = currentTime,
-                Date = currentDate
-            };
-            dialog.DisableEditingKeyFields();
-
-            bool result = dialog.ShowDialog() == true;
-            newTime = dialog.Time;
-            newDate = dialog.Date;
-            return result;
-        }
-
-        public void ShowError(string message, string title)
-        {
-            MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Error);
-        }
+        return false;
     }
+
+    public static bool ShowEditPlayerDialog(string currentNick, int currentAge, out string newNick, out int newAge)
+    {
+        var vm = new PlayerDetailsViewModel() { Nick = currentNick, Age = currentAge };
+        var win = new PlayerDetails { DataContext = vm, Owner = GetOwner() };
+        vm.RequestClose += (s, e) => { win.DialogResult = e; win.Close(); };
+
+        if (win.ShowDialog() == true)
+        {
+            newNick = vm.Nick;
+            newAge = vm.Age!.Value;
+
+            return true;
+        }
+
+        newNick = string.Empty;
+        newAge = 0;
+
+        return false;
+    }
+
+    public static bool ShowAddGameDialog(IEnumerable<Platform> platforms, IEnumerable<Category> categories, out string name, out string developer, out int releaseYear, out Platform platform, out IList<Category> selectedCategories)
+    {
+        var vm = new GameDetailsViewModel(platforms, categories, []);
+        var win = new GameDetails { DataContext = vm, Owner = GetOwner() };
+        vm.RequestClose += (s, e) => { win.DialogResult = e; win.Close(); };
+
+        if (win.ShowDialog() == true)
+        {
+            name = vm.Name;
+            developer = vm.Developer;
+            releaseYear = vm.ReleaseYear!.Value;
+            platform = vm.SelectedPlatform!;
+            selectedCategories = vm.GetSelectedCategories();
+
+            return true;
+        }
+
+        name = string.Empty;
+        developer = string.Empty;
+        releaseYear = 0;
+        platform = null!;
+        selectedCategories = null!;
+
+        return false;
+    }
+
+    public static bool ShowEditGameDialog(string name, string developer, int releaseYear, Platform platform, IEnumerable<Category> currentCategories, IEnumerable<Platform> allPlatforms, IEnumerable<Category> allCategories, out string newName, out string newDeb, out int newYear, out Platform newPlat, out IList<Category> newCats)
+    {
+        var vm = new GameDetailsViewModel(allPlatforms, allCategories, currentCategories) 
+        { 
+            Name = name, 
+            Developer = developer, 
+            ReleaseYear = releaseYear,
+            SelectedPlatform = platform 
+        };
+        var win = new GameDetails { DataContext = vm, Owner = GetOwner() };
+        vm.RequestClose += (s, e) => { win.DialogResult = e; win.Close(); };
+
+        if (win.ShowDialog() == true)
+        {
+            newName = vm.Name;
+            newDeb = vm.Developer;
+            newYear = vm.ReleaseYear!.Value;
+            newPlat = vm.SelectedPlatform!;
+            newCats = vm.GetSelectedCategories();
+
+            return true;
+        }
+
+        newName = string.Empty;
+        newDeb = string.Empty;
+        newYear = 0;
+        newPlat = null!;
+        newCats = null!;
+
+        return false;
+    }
+
+    public static bool ShowAddResultDialog(IEnumerable<Player> players, IEnumerable<Game> games, IEnumerable<GameCategory> gameCategories, out Player player, out Game game, out Category category, out int time, out System.DateTime date)
+    {
+        var vm = new ResultDetailsViewModel(players, games, gameCategories) { IsKeyFieldsEnabled = true };
+        var win = new ResultDetails { DataContext = vm, Owner = GetOwner() };
+        vm.RequestClose += (s, e) => { win.DialogResult = e; win.Close(); };
+
+        if (win.ShowDialog() == true)
+        {
+            player = vm.SelectedPlayer!;
+            game = vm.SelectedGame!;
+            category = vm.SelectedCategory!;
+            time = vm.Time!.Value;
+            date = vm.Date;
+
+            return true;
+        }
+
+        player = null!;
+        game = null!;
+        category = null!;
+        time = 0;
+        date = System.DateTime.MinValue;
+
+        return false;
+    }
+
+    public static bool ShowEditResultDialog(Player player, Game game, Category category, int time, System.DateTime date, IEnumerable<Player> allPlayers, IEnumerable<Game> allGames, IEnumerable<GameCategory> allGameCategories, out int newTime, out System.DateTime newDate)
+    {
+        var vm = new ResultDetailsViewModel(allPlayers, allGames, allGameCategories)
+        {
+            SelectedPlayer = player,
+            SelectedGame = game,
+            SelectedCategory = category,
+            Time = time,
+            Date = date,
+            IsKeyFieldsEnabled = false
+        };  
+        var win = new ResultDetails { DataContext = vm, Owner = GetOwner() };  
+        vm.RequestClose += (s, e) => { win.DialogResult = e; win.Close(); };
+
+        if (win.ShowDialog() == true)
+        {
+            newTime = vm.Time!.Value;
+            newDate = vm.Date;
+
+            return true;
+        }
+
+        newTime = 0;
+        newDate = System.DateTime.MinValue;
+
+        return false;
+    }
+
+    public static void ShowError(string message, string title) => MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Error);
 }

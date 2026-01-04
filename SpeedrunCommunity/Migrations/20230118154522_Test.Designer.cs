@@ -9,217 +9,216 @@ using SpeedrunCommunity.Persistence;
 
 #nullable disable
 
-namespace SpeedrunCommunity.Migrations
+namespace SpeedrunCommunity.Migrations;
+
+[DbContext(typeof(SRCContext))]
+[Migration("20230118154522_Test")]
+partial class Test
 {
-    [DbContext(typeof(SRCContext))]
-    [Migration("20230118154522_Test")]
-    partial class Test
+    protected override void BuildTargetModel(ModelBuilder modelBuilder)
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
-        {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.10")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+        modelBuilder
+            .HasAnnotation("ProductVersion", "6.0.10")
+            .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+        SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("SpeedrunCommunity.Domain.Category", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+        modelBuilder.Entity("SpeedrunCommunity.Domain.Category", b =>
+            {
+                b.Property<int>("ID")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Description")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ID");
+                b.HasKey("ID");
 
-                    b.ToTable("Categories");
-                });
+                b.ToTable("Categories");
+            });
 
-            modelBuilder.Entity("SpeedrunCommunity.Domain.Game", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+        modelBuilder.Entity("SpeedrunCommunity.Domain.Game", b =>
+            {
+                b.Property<int>("ID")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
-                    b.Property<string>("Developer")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Developer")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PlatformID")
-                        .HasColumnType("int");
+                b.Property<int>("PlatformID")
+                    .HasColumnType("int");
 
-                    b.Property<int>("ReleaseYear")
-                        .HasColumnType("int");
+                b.Property<int>("ReleaseYear")
+                    .HasColumnType("int");
 
-                    b.HasKey("ID");
+                b.HasKey("ID");
 
-                    b.HasIndex("PlatformID");
+                b.HasIndex("PlatformID");
 
-                    b.ToTable("Games");
-                });
+                b.ToTable("Games");
+            });
 
-            modelBuilder.Entity("SpeedrunCommunity.Domain.GameCategory", b =>
-                {
-                    b.Property<int>("GameID")
-                        .HasColumnType("int");
+        modelBuilder.Entity("SpeedrunCommunity.Domain.GameCategory", b =>
+            {
+                b.Property<int>("GameID")
+                    .HasColumnType("int");
 
-                    b.Property<int>("CategoryID")
-                        .HasColumnType("int");
+                b.Property<int>("CategoryID")
+                    .HasColumnType("int");
 
-                    b.HasKey("GameID", "CategoryID");
+                b.HasKey("GameID", "CategoryID");
 
-                    b.HasIndex("CategoryID");
+                b.HasIndex("CategoryID");
 
-                    b.ToTable("GameCategories");
-                });
+                b.ToTable("GameCategories");
+            });
 
-            modelBuilder.Entity("SpeedrunCommunity.Domain.Platform", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+        modelBuilder.Entity("SpeedrunCommunity.Domain.Platform", b =>
+            {
+                b.Property<int>("ID")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ID");
+                b.HasKey("ID");
 
-                    b.ToTable("Platforms");
-                });
+                b.ToTable("Platforms");
+            });
 
-            modelBuilder.Entity("SpeedrunCommunity.Domain.Player", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+        modelBuilder.Entity("SpeedrunCommunity.Domain.Player", b =>
+            {
+                b.Property<int>("ID")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
-                    b.Property<int>("Age")
-                        .HasColumnType("int");
+                b.Property<int>("Age")
+                    .HasColumnType("int");
 
-                    b.Property<string>("Nick")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Nick")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ID");
+                b.HasKey("ID");
 
-                    b.ToTable("Players");
-                });
+                b.ToTable("Players");
+            });
 
-            modelBuilder.Entity("SpeedrunCommunity.Domain.Result", b =>
-                {
-                    b.Property<int>("PlayerID")
-                        .HasColumnType("int");
+        modelBuilder.Entity("SpeedrunCommunity.Domain.Result", b =>
+            {
+                b.Property<int>("PlayerID")
+                    .HasColumnType("int");
 
-                    b.Property<int>("GameID")
-                        .HasColumnType("int");
+                b.Property<int>("GameID")
+                    .HasColumnType("int");
 
-                    b.Property<int>("CategoryID")
-                        .HasColumnType("int");
+                b.Property<int>("CategoryID")
+                    .HasColumnType("int");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                b.Property<DateTime>("Date")
+                    .HasColumnType("datetime2");
 
-                    b.Property<int>("GameCategoryID")
-                        .HasColumnType("int");
+                b.Property<int>("GameCategoryID")
+                    .HasColumnType("int");
 
-                    b.Property<int>("Time")
-                        .HasColumnType("int");
+                b.Property<int>("Time")
+                    .HasColumnType("int");
 
-                    b.HasKey("PlayerID", "GameID", "CategoryID");
+                b.HasKey("PlayerID", "GameID", "CategoryID");
 
-                    b.HasIndex("CategoryID");
+                b.HasIndex("CategoryID");
 
-                    b.HasIndex("GameID", "CategoryID");
+                b.HasIndex("GameID", "CategoryID");
 
-                    b.ToTable("Results");
-                });
+                b.ToTable("Results");
+            });
 
-            modelBuilder.Entity("SpeedrunCommunity.Domain.Game", b =>
-                {
-                    b.HasOne("SpeedrunCommunity.Domain.Platform", "Platform")
-                        .WithMany()
-                        .HasForeignKey("PlatformID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+        modelBuilder.Entity("SpeedrunCommunity.Domain.Game", b =>
+            {
+                b.HasOne("SpeedrunCommunity.Domain.Platform", "Platform")
+                    .WithMany()
+                    .HasForeignKey("PlatformID")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("Platform");
-                });
+                b.Navigation("Platform");
+            });
 
-            modelBuilder.Entity("SpeedrunCommunity.Domain.GameCategory", b =>
-                {
-                    b.HasOne("SpeedrunCommunity.Domain.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+        modelBuilder.Entity("SpeedrunCommunity.Domain.GameCategory", b =>
+            {
+                b.HasOne("SpeedrunCommunity.Domain.Category", "Category")
+                    .WithMany()
+                    .HasForeignKey("CategoryID")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.HasOne("SpeedrunCommunity.Domain.Game", "Game")
-                        .WithMany()
-                        .HasForeignKey("GameID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                b.HasOne("SpeedrunCommunity.Domain.Game", "Game")
+                    .WithMany()
+                    .HasForeignKey("GameID")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("Category");
+                b.Navigation("Category");
 
-                    b.Navigation("Game");
-                });
+                b.Navigation("Game");
+            });
 
-            modelBuilder.Entity("SpeedrunCommunity.Domain.Result", b =>
-                {
-                    b.HasOne("SpeedrunCommunity.Domain.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+        modelBuilder.Entity("SpeedrunCommunity.Domain.Result", b =>
+            {
+                b.HasOne("SpeedrunCommunity.Domain.Category", "Category")
+                    .WithMany()
+                    .HasForeignKey("CategoryID")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.HasOne("SpeedrunCommunity.Domain.Game", "Game")
-                        .WithMany()
-                        .HasForeignKey("GameID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                b.HasOne("SpeedrunCommunity.Domain.Game", "Game")
+                    .WithMany()
+                    .HasForeignKey("GameID")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.HasOne("SpeedrunCommunity.Domain.Player", "Player")
-                        .WithMany()
-                        .HasForeignKey("PlayerID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                b.HasOne("SpeedrunCommunity.Domain.Player", "Player")
+                    .WithMany()
+                    .HasForeignKey("PlayerID")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.HasOne("SpeedrunCommunity.Domain.GameCategory", "GameCategory")
-                        .WithMany()
-                        .HasForeignKey("GameID", "CategoryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                b.HasOne("SpeedrunCommunity.Domain.GameCategory", "GameCategory")
+                    .WithMany()
+                    .HasForeignKey("GameID", "CategoryID")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("Category");
+                b.Navigation("Category");
 
-                    b.Navigation("Game");
+                b.Navigation("Game");
 
-                    b.Navigation("GameCategory");
+                b.Navigation("GameCategory");
 
-                    b.Navigation("Player");
-                });
+                b.Navigation("Player");
+            });
 #pragma warning restore 612, 618
-        }
     }
 }

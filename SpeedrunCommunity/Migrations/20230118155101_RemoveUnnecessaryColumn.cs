@@ -2,25 +2,18 @@
 
 #nullable disable
 
-namespace SpeedrunCommunity.Migrations
-{
-    public partial class RemoveUnnecessaryColumn : Migration
-    {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "GameCategoryID",
-                table: "Results");
-        }
+namespace SpeedrunCommunity.Migrations;
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AddColumn<int>(
-                name: "GameCategoryID",
-                table: "Results",
-                type: "int",
-                nullable: false,
-                defaultValue: 0);
-        }
-    }
+public partial class RemoveUnnecessaryColumn : Migration
+{
+    protected override void Up(MigrationBuilder migrationBuilder) => migrationBuilder.DropColumn(
+            name: "GameCategoryID",
+            table: "Results");
+
+    protected override void Down(MigrationBuilder migrationBuilder) => migrationBuilder.AddColumn<int>(
+            name: "GameCategoryID",
+            table: "Results",
+            type: "int",
+            nullable: false,
+            defaultValue: 0);
 }
